@@ -6,8 +6,8 @@ from pyftpdlib.servers import FTPServer
 PORT = 1211 
 
 USER = 'stuckinreverse'
-PASS = 1211
-
+PASS = '1211'
+host = '192.168.1.12'
 
 
 def start_ftp_server():
@@ -15,8 +15,8 @@ def start_ftp_server():
     authorizer = DummyAuthorizer()
 
     # Define a new user having full r/w permissions and a read-only anonymous user
-    authorizer.add_user("user", "password", "/path/to/home", perm="elradfmwMT")
-    authorizer.add_anonymous("/path/to/public")
+    authorizer.add_user("stuckinreverse", "1211", "/home/stuckinreverse/gh-repo/", perm="elradfmwMT")
+    authorizer.add_anonymous("/home/stuckinreverse/gh-repo/RAT/")
 
     # Instantiate FTP handler class
     handler = FTPHandler
@@ -25,8 +25,8 @@ def start_ftp_server():
     # Define a customized banner (string returned when client connects)
     handler.banner = "Welcome to my FTP server"
 
-    # Instantiate FTP server class and listen on 0.0.0.0:2121
-    address = ("0.0.0.0", 2121)
+    # Instantiate FTP server class and listen on 0.0.0.0:1211
+    address = (host, 1211)
     server = FTPServer(address, handler)
 
     # Set a limit for connections
@@ -34,8 +34,13 @@ def start_ftp_server():
     server.max_cons_per_ip = 5
 
     # Start the FTP server
-    server.serve_forever()
-
+    try:
+        server.serve_forever()
+    
+    except KeyboardInterrupt:
+        server.stop()
+        server.close_all()
+        print("Server stopped")
 
 if __name__ == '__main__':
     start_ftp_server()
